@@ -1,0 +1,41 @@
+# ONNX Runtime — install ONE of the following depending on your setup:
+#
+# Option A: NPU via DirectML (works on Ryzen AI on Windows, easiest to start)
+onnxruntime-directml>=1.17.0
+#
+# Option B: After AMD Ryzen AI SDK is installed, use VitisAI EP (max NPU perf)
+# onnxruntime-vitisai>=1.17.0
+#
+# Option C: CPU only (for development/testing without NPU)
+# onnxruntime>=1.17.0
+
+# Model export & optimization
+optimum[onnxruntime]>=1.17.0
+transformers>=4.40.0
+torch>=2.2.0
+torchvision>=0.17.0
+
+# OCR
+paddlepaddle>=2.6.0          # CPU version — for GPU: paddlepaddle-gpu
+paddleocr>=2.7.0
+
+# Embeddings
+sentence-transformers>=2.7.0
+
+# Image processing
+Pillow>=10.0.0
+opencv-python-headless>=4.9.0
+pdf2image>=1.17.0             # Converts PDF pages to images for OCR
+pymupdf>=1.24.0               # Fast PDF page extraction (fitz)
+
+# API server
+fastapi>=0.111.0
+uvicorn[standard]>=0.29.0
+python-multipart>=0.0.9
+httpx>=0.27.0
+
+# Utilities
+numpy>=1.26.0
+pydantic>=2.7.0
+python-dotenv>=1.0.0
+loguru>=0.7.2

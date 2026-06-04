@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+*.egg
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+htmlcov/
+.coverage
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Models (large files — track with Git LFS or download separately)
+npu_engine/models/*.onnx
+npu_engine/models/*.bin
+npu_engine/models/*.pt
+ml_training/data/raw/
+
+# Node
+node_modules/
+frontend/dist/
+frontend/.next/
+frontend/.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.suo
+
+# Docker volumes
+infra/volumes/
+
+# Logs
+*.log
+logs/

@@ -1,0 +1,82 @@
+version: "3.9"
+
+services:
+  # ── PostgreSQL ──────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: neurolens_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-neurolens}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-neurolens_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-neurolens}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-neurolens}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── MinIO (S3-compatible object storage) ────────────────────────────────────
+  minio:
+    image: minio/minio:latest
+    container_name: neurolens_minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin123}
+    ports:
+      - "9000:9000"   # API
+      - "9001:9001"   # Web console → open http://localhost:9001
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── ChromaDB (Vector database) ──────────────────────────────────────────────
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: neurolens_chroma
+    restart: unless-stopped
+    ports:
+      - "8001:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    environment:
+      IS_PERSISTENT: "TRUE"
+      ANONYMIZED_TELEMETRY: "FALSE"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/heartbeat"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Ollama (Local LLM server) ───────────────────────────────────────────────
+  # NOTE: Ollama runs best natively on Windows, NOT in Docker on Windows.
+  # Install it directly: https://ollama.ai/download
+  # This service is for Linux/Mac users only.
+  # On Windows: just run `ollama serve` in a terminal after installing.
+  # ollama:
+  #   image: ollama/ollama:latest
+  #   container_name: neurolens_ollama
+  #   ports:
+  #     - "11434:11434"
+  #   volumes:
+  #     - ollama_data:/root/.ollama
+
+volumes:
+  postgres_data:
+  minio_data:
+  chroma_data:
+  # ollama_data:
+
+networks:
+  default:
+    name: neurolens_network

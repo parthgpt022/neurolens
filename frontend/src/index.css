@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply antialiased text-gray-900;
+  }
+  /* Scrollbar styling */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { @apply bg-transparent; }
+  ::-webkit-scrollbar-thumb { @apply bg-gray-200 rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-gray-300; }
+}
+
+/* Markdown prose overrides */
+.prose pre { @apply bg-gray-50 border border-gray-100 rounded-lg text-xs; }
+.prose code { @apply bg-gray-100 text-gray-700 rounded px-1; font-size: 0.8em; }
+.prose table { @apply text-xs; }
+.prose th { @apply bg-gray-50; }
