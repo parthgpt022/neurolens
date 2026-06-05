@@ -1,0 +1,16 @@
+# Terminal 1: Docker databases
+cd D:\neurolens\neurolens\infra
+docker compose up -d
+
+# Terminal 2: Ollama LLM (already running)
+ollama serve
+
+# Terminal 3: Backend
+cd D:\neurolens\neurolens\backend
+.venv311\Scripts\activate
+set PYTHONPATH=D:\neurolens\neurolens
+uvicorn main:app --reload --port 8000
+
+# Terminal 4: Frontend
+cd D:\neurolens\neurolens\frontend
+npm run dev
