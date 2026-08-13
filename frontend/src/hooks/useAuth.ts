@@ -12,7 +12,7 @@ interface AuthState {
   loadUser: () => Promise<void>
 }
 
-export const useAuthStore = create<AuthState>((set, get) => ({
+export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   token: localStorage.getItem('neurolens_token'),
   isLoading: false,
