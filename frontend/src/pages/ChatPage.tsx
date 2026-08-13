@@ -1,7 +1,7 @@
 // frontend/src/pages/ChatPage.tsx
 import { useState, useRef, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useParams } from 'react-router-dom'
+import { useQuery, useMutation } from '@tanstack/react-query'
 import { Send, Mic, MicOff, Loader2, FileText, ChevronDown } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -9,10 +9,14 @@ import { chatApi, type ChatMessage, type Citation } from '../api/services'
 import { useVoice } from '../hooks/useVoice'
 import clsx from 'clsx'
 
+interface SessionData {
+  title: string
+  document_ids: string[]
+  messages?: ChatMessage[]
+}
+
 export default function ChatPage() {
   const { sessionId } = useParams<{ sessionId: string }>()
-  const navigate = useNavigate()
-  const queryClient = useQueryClient()
   const [input, setInput] = useState('')
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -27,8 +31,14 @@ export default function ChatPage() {
     queryKey: ['session', sessionId],
     queryFn: () => chatApi.getSession(sessionId!).then((r) => r.data),
     enabled: !!sessionId && sessionId !== 'new',
-    onSuccess: (data) => setMessages(data.messages || []),
+    select: (data: SessionData) => data,
   })
+
+  useEffect(() => {
+    if (session?.messages) {
+      setMessages(session.messages)
+    }
+  }, [session?.messages])
 
   const sendMutation = useMutation({
     mutationFn: (message: string) =>
