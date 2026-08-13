@@ -1,7 +1,7 @@
 // frontend/src/pages/DocumentPage.tsx
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation } from '@tanstack/react-query'
-import { ArrowLeft, MessageSquare, Loader2, Tag, FileText, Cpu } from 'lucide-react'
+import { ArrowLeft, MessageSquare, Loader2, Tag, FileText } from 'lucide-react'
 import { documentsApi, chatApi } from '../api/services'
 import clsx from 'clsx'
 
@@ -45,7 +45,7 @@ export default function DocumentPage() {
 
   if (!doc) return null
 
-  const meta = doc.ocr_metadata as any
+  const meta = doc.ocr_metadata as Record<string, unknown>
 
   return (
     <div className="p-8 max-w-5xl mx-auto">
@@ -80,7 +80,7 @@ export default function DocumentPage() {
             { label: 'Pages', value: meta.page_count },
             { label: 'Text chunks', value: meta.chunk_count },
             { label: 'OCR latency', value: `${meta.ocr_latency_ms}ms` },
-            { label: 'Embed provider', value: meta.embed_provider?.replace('ExecutionProvider', '') || 'CPU' },
+            { label: 'Embed provider', value: (meta.embed_provider as string)?.replace('ExecutionProvider', '') || 'CPU' },
           ].map(({ label, value }) => (
             <div key={label} className="bg-white border border-gray-100 rounded-xl p-4">
               <p className="text-xs text-gray-400">{label}</p>
@@ -125,15 +125,15 @@ export default function DocumentPage() {
               ) : (
                 entities.map((e) => (
                   <div
-                    key={e.id}
+                    key={(e as any).id}
                     className={clsx(
                       'px-3 py-2 rounded-lg border text-xs',
-                      ENTITY_COLORS[e.entity_type] || ENTITY_COLORS.DEFAULT
+                      ENTITY_COLORS[(e as any).entity_type] || ENTITY_COLORS.DEFAULT
                     )}
                   >
-                    <div className="font-medium">{e.value}</div>
+                    <div className="font-medium">{(e as any).value}</div>
                     <div className="opacity-60 mt-0.5">
-                      {e.entity_type} · p.{e.page_number} · {(e.confidence * 100).toFixed(0)}%
+                      {(e as any).entity_type} · p.{(e as any).page_number} · {((e as any).confidence * 100).toFixed(0)}%
                     </div>
                   </div>
                 ))
