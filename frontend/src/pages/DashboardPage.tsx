@@ -31,8 +31,8 @@ export default function DashboardPage() {
   const { data: docs = [], isLoading } = useQuery({
     queryKey: ['documents'],
     queryFn: () => documentsApi.list().then((r) => r.data),
-    refetchInterval: (data) =>
-      data?.some((d) => d.status === 'processing' || d.status === 'pending') ? 3000 : false,
+    refetchInterval: (data?: Document[]) =>
+      data?.some((d: Document) => d.status === 'processing' || d.status === 'pending') ? 3000 : false,
   })
 
   const uploadMutation = useMutation({
@@ -59,7 +59,7 @@ export default function DashboardPage() {
 
   const onDrop = useCallback((files: File[]) => {
     files.forEach((f) => uploadMutation.mutate(f))
-  }, [])
+  }, [uploadMutation])
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
