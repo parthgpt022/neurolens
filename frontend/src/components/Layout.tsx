@@ -1,5 +1,5 @@
 // frontend/src/components/Layout.tsx
-import { Outlet, NavLink, useNavigate } from 'react-router-dom'
+import { Outlet, NavLink } from 'react-router-dom'
 import { FileText, MessageSquare, Cpu, LogOut, Brain } from 'lucide-react'
 import { useAuthStore } from '../hooks/useAuth'
 import { useQuery } from '@tanstack/react-query'
